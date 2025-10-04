@@ -246,167 +246,311 @@
         </div>
 
         <!-- 3. Rotina de cuidados -->
-        <div class="mb-3">
-          <div class="section-title">3. ROTINA DE CUIDADOS (Turnos Integrados)</div>
+       <div class="mb-3">
+          <div class="section-title">🩺 3. ROTINA DE CUIDADOS (Turnos Integrados)</div>
 
-          <div class="mb-2">
-            <label class="form-label small-muted">Administração de medicamentos</label>
-            <div class="row g-2">
-              <div class="col-md-4">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="adm_jejum" />
-                  <label class="form-check-label" for="adm_jejum">jejum</label>
-                </div>
-              </div>
-              <div class="col-md-8">
-                <label class="form-label small-muted">Medicações utilizadas (separe por vírgula)</label>
-                <input type="text" id="medicamentos_utilizados" class="form-control form-control-sm" placeholder="Nome dos medicamentos">
-              </div>
-            </div>
+          <div class="table-responsive">
+            <table class="table table-bordered table-fixed">
+              <thead class="table-light">
+                <tr>
+                  <th style="width:26%;">Tarefa</th>
+                  <th style="width:24%;">Manhã</th>
+                  <th style="width:24%;">Tarde</th>
+                  <th style="width:26%;">Noite</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <!-- Administração de medicamentos -->
+                <tr>
+                  <td>Administração de medicamentos</td>
+                  <td>
+                    <input type="time" id="med_manha_1" class="form-control form-control-sm tiny-time" />
+                    <input type="time" id="med_manha_2" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="time" id="med_tarde_1" class="form-control form-control-sm tiny-time" />
+                    <input type="time" id="med_tarde_2" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="time" id="med_noite_1" class="form-control form-control-sm tiny-time" />
+                    <input type="time" id="med_noite_2" class="form-control form-control-sm tiny-time" />
+                  </td>
+                </tr>
+                <!-- Precisa comprar medicamento -->
+                <tr>
+                  <td>Precisa comprar medicamento?</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-2">
+                        <input type="radio" name="precisa_comprar_med" value="NAO" > Não
+                        <input type="radio" name="precisa_comprar_med" value="Sim"> Sim — Qual/Quais:
+                      </div>
+                      <div class="col-md-10">
+                          <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Qual/quais medicamentos (se aplicável)">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Precisa comprar medicamento -->
+                <tr>
+                  <td>Precisa comprar medicamento?</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-2">
+                        <input type="radio" name="precisa_comprar_med" value="NAO" > Não
+                        <input type="radio" name="precisa_comprar_med" value="Sim"> Sim — Qual/Quais:
+                      </div>
+                      <div class="col-md-10">
+                          <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Qual/quais medicamentos (se aplicável)">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Refeições realizadas -->
+                <tr>
+                  <td>Refeições realizadas</td>
+                  <td>
+                    <input type="radio" id="med_manha_1"  />Café da manhã <br />
+                    <input type="radio" id="med_manha_2"  />Lanche da manhã
+                  </td>
+                  <td>
+                    <input type="radio" id="med_tarde_1"  />Almoço <br />
+                    <input type="radio" id="med_tarde_2"  />Lanche da tarde
+                  </td>
+                  <td>
+                    <input type="radio" id="med_noite_1"  />Jantar <br />
+                    <input type="radio" id="med_noite_2"  />Ceia
+                  </td>
+                </tr>
+
+                <!-- Hidratação -->
+                <tr>
+                  <td>Hidratação</td>
+                  <td>
+                    <input type="time" id="med_manha_1" class="form-control form-control-sm tiny-time" />
+                    <input type="time" id="med_manha_2" class="form-control form-control-sm tiny-time" /><br />
+                    <input type="time" id="med_manha_2" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="time" id="med_manha_1" class="form-control form-control-sm tiny-time" />
+                    <input type="time" id="med_manha_2" class="form-control form-control-sm tiny-time" /><br />
+                    <input type="time" id="med_manha_2" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="time" id="med_manha_1" class="form-control form-control-sm tiny-time" />
+                    <input type="time" id="med_manha_2" class="form-control form-control-sm tiny-time" />
+                  </td>
+                </tr>
+
+                <!-- Higiene pessoal e troca de roupas -->
+                <tr>
+                  <td>Higiene pessoal e troca de roupas</td>
+                  <td>
+                    <input type="radio" id="med_manha_1"  />Sim <br />
+                    <input type="radio" id="med_manha_2"  />Não
+                  </td>
+                  <td>
+                    <input type="radio" id="med_tarde_1"  />Sim <br />
+                    <input type="radio" id="med_tarde_2"  />Não
+                  </td>
+                  <td>
+                    <input type="radio" id="med_noite_1"  />Sim <br />
+                    <input type="radio" id="med_noite_2"  />Não
+                  </td>
+                </tr>
+                <!-- Precisa comprar item de higiene? -->
+                <tr>
+                  <td>Precisa comprar item de higiene?</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-2">
+                        <input type="radio" name="precisa_comprar_med" value="NAO" > Não
+                        <input type="radio" name="precisa_comprar_med" value="Sim"> Sim — Qual/Quais:
+                      </div>
+                      <div class="col-md-10">
+                          <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Qual/Quais">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Urinou? -->
+                <tr>
+                  <td>Urinou?</td>
+                  <td>
+                    <input type="radio" id="med_manha_1"  />Sim <br />
+                    <input type="radio" id="med_manha_2"  />Não
+                  </td>
+                  <td>
+                    <input type="radio" id="med_tarde_1"  />Sim <br />
+                    <input type="radio" id="med_tarde_2"  />Não
+                  </td>
+                  <td>
+                    <input type="radio" id="med_noite_1"  />Sim <br />
+                    <input type="radio" id="med_noite_2"  />Não
+                  </td>
+                </tr>
+
+                <!-- Alteração de aspecto? -->
+                <tr>
+                  <td>Alteração de aspecto?</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-2">
+                        <input type="radio" name="precisa_comprar_med" value="NAO" > Não
+                        <input type="radio" name="precisa_comprar_med" value="Sim"> Sim — Qual/Quais:
+                      </div>
+                      <div class="col-md-10">
+                          <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Qual/Quais">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Fezes presentes? -->
+                <tr>
+                  <td>Fezes presentes?</td>
+                  <td>
+                    <input type="radio" id="med_manha_1"  />Sim <br />
+                    <input type="radio" id="med_manha_2"  />Não
+                  </td>
+                  <td>
+                    <input type="radio" id="med_tarde_1"  />Sim <br />
+                    <input type="radio" id="med_tarde_2"  />Não
+                  </td>
+                  <td>
+                    <input type="radio" id="med_noite_1"  />Sim <br />
+                    <input type="radio" id="med_noite_2"  />Não
+                  </td>
+                </tr>
+                
+                <!-- Fezes presentes? -->
+                <tr>
+                  <td>Fezes presentes?</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-10">
+                          <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Se “NÃO” em todos os turnos, quando foi a última evacuação?">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Alteração de aspecto? -->
+                <tr>
+                  <td>Alteração de aspecto?</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-2">
+                        <input type="radio" name="precisa_comprar_med" value="NAO" > Não
+                        <input type="radio" name="precisa_comprar_med" value="Sim"> Sim — Qual/Quais:
+                      </div>
+                      <div class="col-md-10">
+                          <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Qual/Quais">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Mudança de decúbito realizada? -->
+                <tr>
+                  <td>Mudança de decúbito realizada?</td>
+                  <td>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_06"><label class="form-check-label">06h</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_06"><label class="form-check-label">09h</label></div>
+                  </td>
+                  <td>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_06"><label class="form-check-label">12h</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_06"><label class="form-check-label">15h</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_06"><label class="form-check-label">18h</label></div>
+                  </td>
+                  <td>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_06"><label class="form-check-label">21h</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_06"><label class="form-check-label">00h</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_06"><label class="form-check-label">03h</label></div>
+                  </td>
+                </tr>
+
+                <!-- Lesão de pele presente? -->
+                <tr>
+                  <td>Lesão de pele presente?</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-2">
+                        <input type="radio" name="precisa_comprar_med" value="NAO" > Sim <br />
+                        <input type="radio" name="precisa_comprar_med" value="Sim"> Não — Local e descrição:
+                      </div>
+                      <div class="col-md-10">
+                          <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Local e descrição">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Sinais ou sintomas observados -->
+                <tr>
+                  <td>Sinais ou sintomas observados</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-10">
+                          <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Estímulo cognitivo/social -->
+                <tr>
+                  <td>Estímulo cognitivo/social</td>
+                  <td>
+                      <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Quais">
+                  </td>
+                  <td>
+                      <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Quais">
+                  </td>
+                  <td>
+                      <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Quais">
+                  </td>
+                </tr>
+
+                <!-- Atividade física realizada? -->
+                <tr>
+                  <td>Atividade física realizada?</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-2">
+                        <input type="radio" name="precisa_comprar_med" value="NAO" > Não <br />
+                        <input type="radio" name="precisa_comprar_med" value="Sim"> Sim — Quais horários:
+                      </div>
+                      <div class="col-md-10">
+                          <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Quais horários">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Saiu de casa? -->
+                <tr>
+                  <td>Saiu de casa?</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-2">
+                        <input type="radio" name="precisa_comprar_med" value="NAO" > Não <br />
+                        <input type="radio" name="precisa_comprar_med" value="Sim"> Sim — Para onde:
+                      </div>
+                      <div class="col-md-10">
+                          <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Para onde:">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
           </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Precisa comprar medicamento?</label>
-            <div>
-              <label class="checkbox-inline"><input type="radio" name="precisa_comprar_med" value="Não" checked> Não</label>
-              <label class="checkbox-inline ms-3"><input type="radio" name="precisa_comprar_med" value="Sim"> Sim — Qual/Quais:</label>
-              <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Qual/quais medicamentos (se aplicável)">
-            </div>
           </div>
-
-          <hr />
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Refeições realizadas</label>
-            <div class="row g-2">
-              <div class="col-6 col-md-3"><label class="checkbox-inline"><input type="checkbox" id="ref_cafe"> Café da manhã</label></div>
-              <div class="col-6 col-md-3"><label class="checkbox-inline"><input type="checkbox" id="ref_lanche_manha"> Lanche da manhã</label></div>
-              <div class="col-6 col-md-3"><label class="checkbox-inline"><input type="checkbox" id="ref_almoco"> Almoço</label></div>
-              <div class="col-6 col-md-3"><label class="checkbox-inline"><input type="checkbox" id="ref_lanche_tarde"> Lanche da tarde</label></div>
-
-              <div class="col-6 col-md-3 mt-2"><label class="checkbox-inline"><input type="checkbox" id="ref_jantar"> Jantar</label></div>
-              <div class="col-6 col-md-3 mt-2"><label class="checkbox-inline"><input type="checkbox" id="ref_ceia"> Ceia</label></div>
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Hidratação</label>
-            <div class="row g-2">
-              <div class="col-md-4">
-                <input type="text" id="hidracao_manha" class="form-control form-control-sm" placeholder="Manhã">
-              </div>
-              <div class="col-md-4">
-                <input type="text" id="hidracao_tarde" class="form-control form-control-sm" placeholder="Tarde">
-              </div>
-              <div class="col-md-4">
-                <input type="text" id="hidracao_noite" class="form-control form-control-sm" placeholder="Noite">
-              </div>
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Higiene pessoal e troca de roupas</label>
-            <div class="row g-2">
-              <div class="col-md-4">
-                <label class="checkbox-inline"><input type="checkbox" id="hig_manha"> Sim</label>
-              </div>
-              <div class="col-md-4">
-                <label class="checkbox-inline"><input type="checkbox" id="hig_tarde"> Sim</label>
-              </div>
-              <div class="col-md-4">
-                <label class="checkbox-inline"><input type="checkbox" id="hig_noite"> Sim</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Precisa comprar item de higiene?</label>
-            <div>
-              <label class="checkbox-inline"><input type="radio" name="precisa_comprar_hig" value="Não" checked> Não</label>
-              <label class="checkbox-inline ms-3"><input type="radio" name="precisa_comprar_hig" value="Sim"> Sim — Qual/Quais:</label>
-              <input type="text" id="qual_item_higien" class="form-control form-control-sm mt-2" placeholder="Qual/quais itens (se aplicável)">
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Urinou? (Manhã / Tarde / Noite)</label>
-            <div class="row g-2">
-              <div class="col-4"><label class="checkbox-inline"><input type="radio" name="urinou_manha" value="Sim"> Sim</label> <label class="checkbox-inline ms-2"><input type="radio" name="urinou_manha" value="Não" checked> Não</label></div>
-              <div class="col-4"><label class="checkbox-inline"><input type="radio" name="urinou_tarde" value="Sim"> Sim</label> <label class="checkbox-inline ms-2"><input type="radio" name="urinou_tarde" value="Não" checked> Não</label></div>
-              <div class="col-4"><label class="checkbox-inline"><input type="radio" name="urinou_noite" value="Sim"> Sim</label> <label class="checkbox-inline ms-2"><input type="radio" name="urinou_noite" value="Não" checked> Não</label></div>
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Alteração de aspecto nas fezes?</label>
-            <div>
-              <label class="checkbox-inline"><input type="radio" name="alter_feze" value="Não" checked> Não</label>
-              <label class="checkbox-inline ms-3"><input type="radio" name="alter_feze" value="Sim"> Sim — Qual:</label>
-              <input type="text" id="qual_alter_feze" class="form-control form-control-sm mt-2" placeholder="Descrever alteração">
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Se “NÃO” em todos os turnos, quando foi a última evacuação?</label>
-            <input type="date" id="ultima_evac" class="form-control form-control-sm" />
-            <div class="small-muted mt-1">Atenção se sem evacuar há mais de 4 dias</div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Mudança de decúbito realizada?</label>
-            <div class="d-flex flex-wrap gap-2">
-              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_06"><label class="form-check-label">06h</label></div>
-              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_09"><label class="form-check-label">09h</label></div>
-              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_12"><label class="form-check-label">12h</label></div>
-              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_15"><label class="form-check-label">15h</label></div>
-              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_18"><label class="form-check-label">18h</label></div>
-              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_21"><label class="form-check-label">21h</label></div>
-              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_00"><label class="form-check-label">00h</label></div>
-              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_03"><label class="form-check-label">03h</label></div>
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Lesão de pele presente?</label>
-            <div>
-              <label class="checkbox-inline"><input type="radio" name="lesao_pele" value="Sim"> Sim</label>
-              <label class="checkbox-inline ms-3"><input type="radio" name="lesao_pele" value="Não" checked> Não</label>
-              <input type="text" id="lesao_pele_desc" class="form-control form-control-sm mt-2" placeholder="Local e descrição">
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Sinais ou sintomas observados</label>
-            <textarea id="sinais_observados" class="form-control form-control-sm textarea-small" placeholder="Descrever sinais ou sintomas observados..."></textarea>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Estimulo cognitivo/social</label>
-            <div class="row g-2">
-              <div class="col-md-4"><input type="text" id="est_cog_1" class="form-control form-control-sm" placeholder="Qual"></div>
-              <div class="col-md-4"><input type="text" id="est_cog_2" class="form-control form-control-sm" placeholder="Qual"></div>
-              <div class="col-md-4"><input type="text" id="est_cog_3" class="form-control form-control-sm" placeholder="Qual"></div>
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Atividade física realizada?</label>
-            <div>
-              <label class="checkbox-inline"><input type="radio" name="atividade_fisica" value="Não" checked> Não</label>
-              <label class="checkbox-inline ms-3"><input type="radio" name="atividade_fisica" value="Sim"> Sim — Qual e horário:</label>
-              <input type="text" id="qual_atividade" class="form-control form-control-sm mt-2" placeholder="Descrever atividade e horário">
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label small-muted">Saiu de casa?</label>
-            <div>
-              <label class="checkbox-inline"><input type="radio" name="saiu_de_casa" value="Não" checked> Não</label>
-              <label class="checkbox-inline ms-3"><input type="radio" name="saiu_de_casa" value="Sim"> Sim — Para onde:</label>
-              <input type="text" id="saiu_para_onde" class="form-control form-control-sm mt-2" placeholder="Destino">
-            </div>
-          </div>
-
         </div>
 
         <!-- 4. Período noturno -->
