@@ -1,102 +1,625 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!doctype html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ficha do Paciente Idoso</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Ícones -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Check List do Cuidador — Lotus Care</title>
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <style>
-    body { background: #f0f2f5; }
-    .card { border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    h5 { border-left: 5px solid #0d6efd; padding-left: 10px; margin-bottom: 15px; font-weight: 600; color: #0d6efd; }
-    .btn-primary { background: linear-gradient(90deg, #0d6efd, #0b5ed7); border: none; border-radius: 30px; font-weight: 600; }
-    .btn-primary:hover { background: linear-gradient(90deg, #0b5ed7, #0a58ca); }
-    .form-control, textarea { border-radius: 12px; }
+    /* Pequenas customizações para aproximar do layout do PDF */
+    body { background: #f5f7fb; padding: 20px; }
+    .pdf-wrapper { background: #fff; padding: 24px; border-radius: 6px; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+    .section-title { font-weight: 600; font-size: 1.05rem; margin-bottom: .5rem; }
+    .small-muted { font-size: .85rem; color: #6c757d; }
+    .table-fixed { table-layout: fixed; width: 100%; }
+    .form-control-sm { height: calc(1.5em + .5rem + 2px); }
+    /* For PDF aesthetics: force borders similar to original */
+    .pdf-content { color: #000; }
+    .pdf-header { border-bottom: 1px solid #000; margin-bottom: 12px; padding-bottom: 8px; }
+    .checkbox-inline { display: inline-block; margin-right: 12px; }
+    /* ensure checkboxes and radios appear in PDF clearly */
+    input[type="checkbox"], input[type="radio"] { transform: scale(1.05); margin-right: .25rem; }
+    /* small inputs in table */
+    .tiny { width: 90px; display: inline-block; }
+    .tiny-time { width: 60px; display: inline-block; }
+    .textarea-small { min-height: 64px; }
+    /* page-break helper if PDF needs extra pages */
+    .page-break { page-break-after: always; }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="pdf-wrapper mx-auto" style="max-width: 900px;">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h3 class="mb-0">CHECK LIST DO CUIDADOR — LOTUS CARE</h3>
+        <div>
+          <button id="downloadPdfBtn" class="btn btn-primary">Gerar PDF (A4)</button>
+          <button id="resetBtn" class="btn btn-outline-secondary">Limpar</button>
+        </div>
+      </div>
 
-  <div class="container my-5">
-    <div class="text-center mb-4">
-      <!-- <i class="bi bi-heart-pulse-fill text-danger" style="font-size: 2.5rem;"></i> -->
-      <h2 class="fw-bold mt-2">Ficha de Acompanhamento</h2>
-      <p class="text-muted">Formulário para registro de informações do paciente idoso</p>
-    </div>
-
-    <!-- Card do formulário -->
-    <div class="card p-4" id="formulario">
-      <form id="pacienteForm">
-        
-        <h5><i class="bi bi-person-lines-fill me-2"></i>Dados do Paciente</h5>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Nome</label>
-            <input type="text" name="nome" class="form-control" required>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Idade</label>
-            <input type="number" name="idade" class="form-control" required>
+      <div id="formArea" class="pdf-content">
+        <!-- Header fields -->
+        <div class="pdf-header">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-7">
+              <label class="form-label small-muted">Nome do paciente:</label>
+              <input type="text" id="nomePaciente" class="form-control" placeholder="Nome do paciente">
+            </div>
+            <div class="col-md-5">
+              <div class="row g-2">
+                <div class="col-5">
+                  <label class="form-label small-muted">Data</label>
+                  <input type="date" id="dataPlantao" class="form-control form-control-sm">
+                </div>
+                <div class="col-7">
+                  <label class="form-label small-muted">Início do plantão/acompanhamento</label>
+                  <input type="time" id="inicioPlantao" class="form-control form-control-sm">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <h5><i class="bi bi-activity me-2"></i>Sinais Vitais</h5>
-        <div class="row mb-3">
-          <div class="col-md-4">
-            <label class="form-label">Pressão Arterial</label>
-            <input type="text" name="pressao" class="form-control">
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Frequência Cardíaca</label>
-            <input type="text" name="frequencia" class="form-control">
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Peso</label>
-            <input type="text" name="peso" class="form-control">
-          </div>
-        </div>
-
-        <h5><i class="bi bi-capsule-pill me-2"></i>Uso de Medicamentos</h5>
+        <!-- 1. Parâmetros Clínicos Diários -->
         <div class="mb-3">
-          <label class="form-label">Medicamentos Utilizados</label>
-          <textarea name="medicamentos" class="form-control" rows="2"></textarea>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Quantidade de Remédios</label>
-          <input type="number" name="qtd_remedios" class="form-control">
-        </div>
+          <div class="section-title">🩺 1. PARÂMETROS CLÍNICOS DIÁRIOS</div>
 
-        <h5><i class="bi bi-droplet-half me-2"></i>Funções Fisiológicas</h5>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Evacuações por Semana</label>
-            <input type="number" name="evacuacoes" class="form-control">
+          <div class="table-responsive">
+            <table class="table table-bordered table-fixed">
+              <thead class="table-light">
+                <tr>
+                  <th style="width:26%;">Parâmetro</th>
+                  <th style="width:24%;">Manhã</th>
+                  <th style="width:24%;">Tarde</th>
+                  <th style="width:26%;">Noite</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- PA -->
+                <tr>
+                  <td>PA – Pressão arterial</td>
+                  <td>
+                    <input type="text" id="pa_manha" class="form-control form-control-sm mb-1" placeholder="ex: 120x80 mmHg">
+                    <input type="time" id="pa_manha_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="pa_tarde" class="form-control form-control-sm mb-1" placeholder="ex: 120x80 mmHg">
+                    <input type="time" id="pa_tarde_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="pa_noite" class="form-control form-control-sm mb-1" placeholder="ex: 120x80 mmHg">
+                    <input type="time" id="pa_noite_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                </tr>
+
+                <!-- FC -->
+                <tr>
+                  <td>FC – Freq. cardíaca</td>
+                  <td>
+                    <input type="text" id="fc_manha" class="form-control form-control-sm mb-1" placeholder="bpm">
+                    <input type="time" id="fc_manha_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="fc_tarde" class="form-control form-control-sm mb-1" placeholder="bpm">
+                    <input type="time" id="fc_tarde_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="fc_noite" class="form-control form-control-sm mb-1" placeholder="bpm">
+                    <input type="time" id="fc_noite_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                </tr>
+
+                <!-- FR -->
+                <tr>
+                  <td>FR – Freq. respiratória</td>
+                  <td>
+                    <input type="text" id="fr_manha" class="form-control form-control-sm mb-1" placeholder="rpm">
+                    <input type="time" id="fr_manha_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="fr_tarde" class="form-control form-control-sm mb-1" placeholder="rpm">
+                    <input type="time" id="fr_tarde_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="fr_noite" class="form-control form-control-sm mb-1" placeholder="rpm">
+                    <input type="time" id="fr_noite_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                </tr>
+
+                <!-- SpO2 -->
+                <tr>
+                  <td>SpO₂ – Sat. de oxigênio</td>
+                  <td>
+                    <input type="text" id="spo2_manha" class="form-control form-control-sm mb-1" placeholder="%">
+                    <input type="time" id="spo2_manha_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="spo2_tarde" class="form-control form-control-sm mb-1" placeholder="%">
+                    <input type="time" id="spo2_tarde_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="spo2_noite" class="form-control form-control-sm mb-1" placeholder="%">
+                    <input type="time" id="spo2_noite_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                </tr>
+
+                <!-- Glicemia capilar (2 linhas) -->
+                <tr>
+                  <td>Glicemia capilar</td>
+                  <td>
+                    <input type="text" id="glic_manha_1" class="form-control form-control-sm mb-1 tiny" placeholder="valor">
+                    <input type="time" id="glic_manha_1_hora" class="form-control form-control-sm tiny-time" />
+                    <input type="text" id="glic_manha_2" class="form-control form-control-sm mt-1 tiny" placeholder="valor">
+                    <input type="time" id="glic_manha_2_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="glic_tarde_1" class="form-control form-control-sm mb-1 tiny" placeholder="valor">
+                    <input type="time" id="glic_tarde_1_hora" class="form-control form-control-sm tiny-time" />
+                    <input type="text" id="glic_tarde_2" class="form-control form-control-sm mt-1 tiny" placeholder="valor">
+                    <input type="time" id="glic_tarde_2_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="glic_noite_1" class="form-control form-control-sm mb-1 tiny" placeholder="valor">
+                    <input type="time" id="glic_noite_1_hora" class="form-control form-control-sm tiny-time" />
+                    <input type="text" id="glic_noite_2" class="form-control form-control-sm mt-1 tiny" placeholder="valor">
+                    <input type="time" id="glic_noite_2_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                </tr>
+
+                <!-- Temperatura -->
+                <tr>
+                  <td>Temperatura axilar</td>
+                  <td>
+                    <input type="text" id="temp_manha" class="form-control form-control-sm mb-1" placeholder="°C">
+                    <input type="time" id="temp_manha_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="temp_tarde" class="form-control form-control-sm mb-1" placeholder="°C">
+                    <input type="time" id="temp_tarde_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                  <td>
+                    <input type="text" id="temp_noite" class="form-control form-control-sm mb-1" placeholder="°C">
+                    <input type="time" id="temp_noite_hora" class="form-control form-control-sm tiny-time" />
+                  </td>
+                </tr>
+
+                <!-- Dor -->
+                <tr>
+                  <td>Dor (0–10 e descrição)</td>
+                  <td colspan="3">
+                    <div class="row g-2">
+                      <div class="col-md-2">
+                        <input type="number" id="dor_escala" class="form-control form-control-sm" min="0" max="10" placeholder="Escala">
+                      </div>
+                      <div class="col-md-10">
+                        <input type="text" id="dor_local" class="form-control form-control-sm" placeholder="Onde / descrição">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Outros sinais -->
+                <tr>
+                  <td>Outros sinais clínicos relevantes</td>
+                  <td colspan="3">
+                    <textarea id="outros_sinais" class="form-control form-control-sm textarea-small" placeholder="Descrever..."></textarea>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="col-md-6">
-            <label class="form-label">Sono (horas por noite)</label>
-            <input type="number" name="sono" class="form-control">
+        </div>
+
+        <!-- 2. Estado de consciência -->
+        <div class="mb-3">
+          <div class="section-title">🧠 2. ESTADO DE CONSCIÊNCIA</div>
+          <div class="mb-2">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="estado_consciencia" id="cons_mantido" value="Mantido" checked>
+              <label class="form-check-label" for="cons_mantido">Mantido o padrão habitual</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="estado_consciencia" id="cons_alterado" value="Houve alteração">
+              <label class="form-check-label" for="cons_alterado">Houve alteração (descrever abaixo)</label>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Tipo de alteração:</label>
+            <div>
+              <label class="checkbox-inline"><input type="checkbox" id="tipo_confuso"> Confuso</label>
+              <label class="checkbox-inline"><input type="checkbox" id="tipo_agitado"> Agitado</label>
+              <label class="checkbox-inline"><input type="checkbox" id="tipo_agressivo"> Agressivo</label>
+              <label class="checkbox-inline"><input type="checkbox" id="tipo_sonolento"> Sonolento</label>
+              <label class="checkbox-inline"><input type="checkbox" id="tipo_prostrado"> Prostrado</label>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label small-muted">Comentários:</label>
+            <textarea id="comentarios_consciencia" class="form-control form-control-sm textarea-small" placeholder="Comentários sobre a consciência..."></textarea>
           </div>
         </div>
 
-        <h5><i class="bi bi-journal-text me-2"></i>Observações do Profissional</h5>
+        <!-- 3. Rotina de cuidados -->
         <div class="mb-3">
-          <textarea name="observacoes" class="form-control" rows="4"></textarea>
+          <div class="section-title">3. ROTINA DE CUIDADOS (Turnos Integrados)</div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Administração de medicamentos</label>
+            <div class="row g-2">
+              <div class="col-md-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="adm_jejum" />
+                  <label class="form-check-label" for="adm_jejum">jejum</label>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label small-muted">Medicações utilizadas (separe por vírgula)</label>
+                <input type="text" id="medicamentos_utilizados" class="form-control form-control-sm" placeholder="Nome dos medicamentos">
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Precisa comprar medicamento?</label>
+            <div>
+              <label class="checkbox-inline"><input type="radio" name="precisa_comprar_med" value="Não" checked> Não</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="precisa_comprar_med" value="Sim"> Sim — Qual/Quais:</label>
+              <input type="text" id="qual_medicamento_comprar" class="form-control form-control-sm mt-2" placeholder="Qual/quais medicamentos (se aplicável)">
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Refeições realizadas</label>
+            <div class="row g-2">
+              <div class="col-6 col-md-3"><label class="checkbox-inline"><input type="checkbox" id="ref_cafe"> Café da manhã</label></div>
+              <div class="col-6 col-md-3"><label class="checkbox-inline"><input type="checkbox" id="ref_lanche_manha"> Lanche da manhã</label></div>
+              <div class="col-6 col-md-3"><label class="checkbox-inline"><input type="checkbox" id="ref_almoco"> Almoço</label></div>
+              <div class="col-6 col-md-3"><label class="checkbox-inline"><input type="checkbox" id="ref_lanche_tarde"> Lanche da tarde</label></div>
+
+              <div class="col-6 col-md-3 mt-2"><label class="checkbox-inline"><input type="checkbox" id="ref_jantar"> Jantar</label></div>
+              <div class="col-6 col-md-3 mt-2"><label class="checkbox-inline"><input type="checkbox" id="ref_ceia"> Ceia</label></div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Hidratação</label>
+            <div class="row g-2">
+              <div class="col-md-4">
+                <input type="text" id="hidracao_manha" class="form-control form-control-sm" placeholder="Manhã">
+              </div>
+              <div class="col-md-4">
+                <input type="text" id="hidracao_tarde" class="form-control form-control-sm" placeholder="Tarde">
+              </div>
+              <div class="col-md-4">
+                <input type="text" id="hidracao_noite" class="form-control form-control-sm" placeholder="Noite">
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Higiene pessoal e troca de roupas</label>
+            <div class="row g-2">
+              <div class="col-md-4">
+                <label class="checkbox-inline"><input type="checkbox" id="hig_manha"> Sim</label>
+              </div>
+              <div class="col-md-4">
+                <label class="checkbox-inline"><input type="checkbox" id="hig_tarde"> Sim</label>
+              </div>
+              <div class="col-md-4">
+                <label class="checkbox-inline"><input type="checkbox" id="hig_noite"> Sim</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Precisa comprar item de higiene?</label>
+            <div>
+              <label class="checkbox-inline"><input type="radio" name="precisa_comprar_hig" value="Não" checked> Não</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="precisa_comprar_hig" value="Sim"> Sim — Qual/Quais:</label>
+              <input type="text" id="qual_item_higien" class="form-control form-control-sm mt-2" placeholder="Qual/quais itens (se aplicável)">
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Urinou? (Manhã / Tarde / Noite)</label>
+            <div class="row g-2">
+              <div class="col-4"><label class="checkbox-inline"><input type="radio" name="urinou_manha" value="Sim"> Sim</label> <label class="checkbox-inline ms-2"><input type="radio" name="urinou_manha" value="Não" checked> Não</label></div>
+              <div class="col-4"><label class="checkbox-inline"><input type="radio" name="urinou_tarde" value="Sim"> Sim</label> <label class="checkbox-inline ms-2"><input type="radio" name="urinou_tarde" value="Não" checked> Não</label></div>
+              <div class="col-4"><label class="checkbox-inline"><input type="radio" name="urinou_noite" value="Sim"> Sim</label> <label class="checkbox-inline ms-2"><input type="radio" name="urinou_noite" value="Não" checked> Não</label></div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Alteração de aspecto nas fezes?</label>
+            <div>
+              <label class="checkbox-inline"><input type="radio" name="alter_feze" value="Não" checked> Não</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="alter_feze" value="Sim"> Sim — Qual:</label>
+              <input type="text" id="qual_alter_feze" class="form-control form-control-sm mt-2" placeholder="Descrever alteração">
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Se “NÃO” em todos os turnos, quando foi a última evacuação?</label>
+            <input type="date" id="ultima_evac" class="form-control form-control-sm" />
+            <div class="small-muted mt-1">Atenção se sem evacuar há mais de 4 dias</div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Mudança de decúbito realizada?</label>
+            <div class="d-flex flex-wrap gap-2">
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_06"><label class="form-check-label">06h</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_09"><label class="form-check-label">09h</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_12"><label class="form-check-label">12h</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_15"><label class="form-check-label">15h</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_18"><label class="form-check-label">18h</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_21"><label class="form-check-label">21h</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_00"><label class="form-check-label">00h</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="dec_03"><label class="form-check-label">03h</label></div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Lesão de pele presente?</label>
+            <div>
+              <label class="checkbox-inline"><input type="radio" name="lesao_pele" value="Sim"> Sim</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="lesao_pele" value="Não" checked> Não</label>
+              <input type="text" id="lesao_pele_desc" class="form-control form-control-sm mt-2" placeholder="Local e descrição">
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Sinais ou sintomas observados</label>
+            <textarea id="sinais_observados" class="form-control form-control-sm textarea-small" placeholder="Descrever sinais ou sintomas observados..."></textarea>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Estimulo cognitivo/social</label>
+            <div class="row g-2">
+              <div class="col-md-4"><input type="text" id="est_cog_1" class="form-control form-control-sm" placeholder="Qual"></div>
+              <div class="col-md-4"><input type="text" id="est_cog_2" class="form-control form-control-sm" placeholder="Qual"></div>
+              <div class="col-md-4"><input type="text" id="est_cog_3" class="form-control form-control-sm" placeholder="Qual"></div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Atividade física realizada?</label>
+            <div>
+              <label class="checkbox-inline"><input type="radio" name="atividade_fisica" value="Não" checked> Não</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="atividade_fisica" value="Sim"> Sim — Qual e horário:</label>
+              <input type="text" id="qual_atividade" class="form-control form-control-sm mt-2" placeholder="Descrever atividade e horário">
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Saiu de casa?</label>
+            <div>
+              <label class="checkbox-inline"><input type="radio" name="saiu_de_casa" value="Não" checked> Não</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="saiu_de_casa" value="Sim"> Sim — Para onde:</label>
+              <input type="text" id="saiu_para_onde" class="form-control form-control-sm mt-2" placeholder="Destino">
+            </div>
+          </div>
+
         </div>
 
-        <div class="text-center mt-4">
-          <button type="submit" class="btn btn-primary px-5 py-2">Salvar em PDF</button>
+        <!-- 4. Período noturno -->
+        <div class="mb-3">
+          <div class="section-title">🌙 4. PERÍODO NOTURNO (21h – 07h)</div>
+          <div class="mb-2">
+            <label class="form-label small-muted">Sono repousante?</label>
+            <div>
+              <label class="checkbox-inline"><input type="radio" name="sono_repousante" value="Sim" checked> Sim</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="sono_repousante" value="Não"> Não</label>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small-muted">Intercorrências noturnas?</label>
+            <textarea id="intercorrencias_noturnas" class="form-control form-control-sm textarea-small" placeholder="Descrever intercorrências noturnas..."></textarea>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small-muted">Mudança de decúbito noturna realizada?</label>
+            <div>
+              <label class="checkbox-inline"><input type="radio" name="mud_dec_noturna" value="Sim"> Sim</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="mud_dec_noturna" value="Não" checked> Não</label>
+            </div>
+          </div>
         </div>
-      </form>
+
+        <!-- 5. Ocorrências e comunicação -->
+        <div class="mb-3">
+          <div class="section-title">⚠️ 5. OCORRÊNCIAS E COMUNICAÇÃO</div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Evento relevante (queda, febre, recusa alimentar, alteração comportamental)?</label>
+            <textarea id="evento_relevante" class="form-control form-control-sm textarea-small" placeholder="Descrever evento..."></textarea>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Contato com profissional de saúde durante o acompanhamento?</label>
+            <div>
+              <label class="checkbox-inline"><input type="radio" name="contato_prof" value="Não" checked> Não</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="contato_prof" value="Médico"> Médico</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="contato_prof" value="Enfermeiro"> Enfermeiro</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="contato_prof" value="Fisioterapeuta"> Fisioterapeuta</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="contato_prof" value="Outro"> Outro</label>
+            </div>
+            <input type="text" id="qual_profissional" class="form-control form-control-sm mt-2" placeholder="Se outro, descreva">
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small-muted">Contato com familiar ou responsável durante o plantão?</label>
+            <div>
+              <label class="checkbox-inline"><input type="radio" name="contato_fam" value="Não" checked> Não</label>
+              <label class="checkbox-inline ms-3"><input type="radio" name="contato_fam" value="Sim"> Sim — Nome da pessoa informada:</label>
+              <input type="text" id="nome_familiar_informado" class="form-control form-control-sm mt-2" placeholder="Nome do familiar">
+            </div>
+          </div>
+
+          <div class="row g-2">
+            <div class="col-md-4">
+              <label class="form-label small-muted">Data e hora da comunicação</label>
+              <input type="date" id="data_comunicacao" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small-muted">Horário</label>
+              <input type="time" id="hora_comunicacao" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small-muted">Término do plantão/acompanhamento</label>
+              <input type="time" id="termino_plantao" class="form-control form-control-sm" />
+            </div>
+          </div>
+
+          <div class="mb-2 mt-3">
+            <label class="form-label small-muted">Nome do cuidador responsável</label>
+            <input type="text" id="nome_cuidador" class="form-control form-control-sm" placeholder="Nome do cuidador">
+          </div>
+        </div>
+
+        <div class="text-end small-muted mb-1">Gerado por sistema — Check List do Cuidador</div>
+      </div>
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Biblioteca html2pdf -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Required scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+  <!-- html2canvas and jsPDF (for rendering HTML to PDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+  <script>
+    // Helper to get radio value
+    function getRadioValue(name) {
+      const el = document.querySelector('input[name="'+name+'"]:checked');
+      return el ? el.value : '';
+    }
+
+    // Reset form
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (!confirm('Limpar todos os campos?')) return;
+      document.querySelectorAll('#formArea input, #formArea textarea').forEach(i => {
+        if (i.type === 'checkbox' || i.type === 'radio') i.checked = false;
+        else i.value = '';
+      });
+      // set sensible defaults for radios we used default
+      document.querySelectorAll('input[type=radio]').forEach(r => {
+        if (r.defaultChecked) r.checked = true;
+      });
+    });
+
+    // Generate PDF button
+    document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('downloadPdfBtn');
+      btn.disabled = true;
+      btn.innerText = 'Gerando PDF...';
+
+      try {
+        // Clone the element to avoid UI artifacts (like focused inputs) and set white bg
+        const original = document.getElementById('formArea');
+        const clone = original.cloneNode(true);
+        clone.style.width = '210mm'; // A4 width to improve scale
+        clone.style.padding = '18px';
+        clone.style.background = '#fff';
+
+        // Place clone off-screen
+        clone.style.position = 'fixed';
+        clone.style.left = '-10000px';
+        document.body.appendChild(clone);
+
+        // Increase scale for better resolution
+        const scale = 2; // increase for higher quality (image size bigger)
+        const opt = {
+          scale: scale,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          width: clone.offsetWidth,
+          windowWidth: clone.scrollWidth
+        };
+
+        const canvas = await html2canvas(clone, opt);
+
+        // Remove clone
+        document.body.removeChild(clone);
+
+        // jsPDF expects units in mm; A4 is 210 x 297 mm
+        const { jsPDF } = window.jspdf;
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // Convert canvas to image
+        const imgData = canvas.toDataURL('image/png');
+
+        // Calculate dimensions for PDF
+        const imgProps = canvas;
+        const pdfWidth = 210; // mm
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        // If content height is less than page height, add single page; else, add multiple pages
+        const pageHeight = 297;
+        let position = 0;
+
+        if (pdfHeight <= pageHeight) {
+          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        } else {
+          // Content taller than one page - slice into multiple pages
+          let remainingHeight = canvas.height;
+          const pageCanvasHeight = Math.floor(canvas.width * (pageHeight / pdfWidth)); // px
+
+          let yOffset = 0;
+          while (remainingHeight > 0) {
+            // create a temporary canvas to hold page slice
+            const pageCanvas = document.createElement('canvas');
+            pageCanvas.width = canvas.width;
+            pageCanvas.height = Math.min(pageCanvasHeight, remainingHeight);
+
+            const pageCtx = pageCanvas.getContext('2d');
+            // draw the slice
+            pageCtx.drawImage(canvas, 0, yOffset, canvas.width, pageCanvas.height, 0, 0, canvas.width, pageCanvas.height);
+
+            const pageData = pageCanvas.toDataURL('image/png');
+            const pageImgHeight = (pageCanvas.height * pdfWidth) / pageCanvas.width;
+
+            if (yOffset > 0) pdf.addPage();
+
+            pdf.addImage(pageData, 'PNG', 0, 0, pdfWidth, pageImgHeight);
+
+            remainingHeight -= pageCanvas.height;
+            yOffset += pageCanvas.height;
+          }
+        }
+
+        // filename
+        const paciente = (document.getElementById('nomePaciente').value || 'sem_nome').replace(/\s+/g, '_');
+        const data = document.getElementById('dataPlantao').value || new Date().toISOString().slice(0,10);
+        const filename = `checklist_${paciente}_${data}.pdf`;
+
+        pdf.save(filename);
+
+      } catch (err) {
+        console.error('Erro ao gerar PDF:', err);
+        alert('Ocorreu um erro ao gerar o PDF. Veja o console para mais detalhes.');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Gerar PDF (A4)';
+      }
+    });
+
+    // Optional: small UX enhancement - pressing Enter inside some inputs won't submit
+    document.getElementById('formArea').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        return false;
+      }
+    });
+  </script>
 </body>
 </html>
