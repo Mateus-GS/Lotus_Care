@@ -35,10 +35,10 @@
     <div class="pdf-wrapper mx-auto" style="max-width: 900px;">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <h3 class="mb-0">CHECK LIST DO CUIDADOR — LOTUS CARE</h3>
-        <div>
+        <!-- <div>
           <button id="downloadPdfBtn" class="btn btn-primary">Gerar PDF (A4)</button>
           <button id="resetBtn" class="btn btn-outline-secondary">Limpar</button>
-        </div>
+        </div> -->
       </div>
 
       <div id="formArea" class="pdf-content">
@@ -56,7 +56,7 @@
                   <input type="date" id="dataPlantao" class="form-control form-control-sm">
                 </div>
                 <div class="col-7">
-                  <label class="form-label small-muted">Início do plantão/acompanhamento</label>
+                  <label class="form-label small-muted">Início do plantão</label>
                   <input type="time" id="inicioPlantao" class="form-control form-control-sm">
                 </div>
               </div>
@@ -616,7 +616,7 @@
               <input type="time" id="hora_comunicacao" class="form-control form-control-sm" />
             </div>
             <div class="col-md-4">
-              <label class="form-label small-muted">Término do plantão/acompanhamento</label>
+              <label class="form-label small-muted">Término do plantão</label>
               <input type="time" id="termino_plantao" class="form-control form-control-sm" />
             </div>
           </div>
@@ -625,6 +625,10 @@
             <label class="form-label small-muted">Nome do cuidador responsável</label>
             <input type="text" id="nome_cuidador" class="form-control form-control-sm" placeholder="Nome do cuidador">
           </div>
+        </div>
+
+        <div>
+          <button id="downloadPdfBtn" class="btn btn-primary">Gerar relatório</button>
         </div>
 
         <div class="text-end small-muted mb-1">Gerado por sistema — Check List do Cuidador</div>
